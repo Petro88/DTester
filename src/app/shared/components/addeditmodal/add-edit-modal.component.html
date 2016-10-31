@@ -1,32 +1,49 @@
 <template #createWindow let-c="close" let-d="dismiss">
-
-    <div class="modal-header">
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{data.title}}</h4>
-    </div>
-
-    <div class="modal-body modalBody">
-        <div class="input-group inputGroup" *ngFor="let item of data.list">
-            <span class="input-group-addon modalSpan" >{{item.name}}:</span>
-            <input type="text" class="form-control modalInput"
-                   [(ngModel)]="item.value">
+    <form [formGroup]="modalForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="modal-header">
+            <button
+                    type="button"
+                    class="close"
+                    aria-label="Close"
+                    (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">{{data.title}}</h4>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary"
-                (click)="run();c()">{{data.labelBtn}}
-        </button>
-        <button type="button" class="btn btn-secondary" (click)="c()">Відмінити</button>
-    </div>
+        <div class="modal-body modalBody">
+            <div class="input-group inputGroup" *ngFor="let item of data.list">
+                <span class="input-group-addon modalSpan">{{item.name}}:</span>
+                <input
+                        class="form-control modalInput"
+                        [type]="item.type"
+                        [(ngModel)]="item.value"
+                        [pattern]="item.pattern"
+                        [formControlName]="item.title">
+                <div *ngIf="formErrors[item.title]" class="alert alert-danger error-message">
+                    {{ formErrors[item.title] }}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button
+                    [disabled]="!modalForm[valid]"
+                    type="submit"
+                    class="btn btn-secondary"
+                    (click)="run();c()">
+                {{data.labelBtn}}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="c()">Відмінити</button>
+        </div>
+    </form>
 </template>
 
 <div class="openModalBtn">
     <a *ngIf="data.action==='create'" class="btn btn-default" role="button" [title]="data.title"
        (click)="open(createWindow)">{{data.labelBtn}}
     </a>
-    <a *ngIf="data.action==='edit'" class="btn btn-default btn-sm" role="button"
+    <a *ngIf="data.action==='edit'"
+       class="btn btn-default btn-sm"
+       role="button"
        [title]="data.title"
        (click)="open(createWindow)">
         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>

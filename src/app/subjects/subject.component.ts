@@ -33,6 +33,9 @@ export class SubjectComponent implements OnInit {
     public configAddSubject = configAddSubject;
     public configEditSubject = configEditSubject;
 
+    //only for test directive
+    private switch = true;
+
     constructor(
         private crudService: CRUDService
     ) {}

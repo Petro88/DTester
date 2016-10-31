@@ -8,7 +8,20 @@
 
 .modalSpan {
     min-width: 150px;
+    display: inline-block;
 }
 .openModalBtn {
     display: inline-block;
+}
+
+input .ng-invalid {
+    border-left: 2px solid red;
+}
+
+.ng-valid {
+    border-left: 2px solid green;
+}
+
+.error-message {
+
 }

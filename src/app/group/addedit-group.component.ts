@@ -2,7 +2,7 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 import {Group}   from '../shared/classes/group';
-import { CRUDService } from '../shared/services/crud.service';
+import {CRUDService} from '../shared/services/crud.service';
 
 @Component({
     selector: 'addedit-group',
@@ -13,24 +13,24 @@ import { CRUDService } from '../shared/services/crud.service';
 export class AddeditGroupComponent {
 
     public errorMessage: string;
-    public entity:string = "group";
-    public facultyName:string;
-    public specialityName:string;
+    public entity: string = "group";
+    public facultyName: string;
+    public specialityName: string;
     public facultyId;
     public specialityId;
 
-    @Input() title:string;
+    @Input() title: string;
     @Input() action: string;
     @Input() groups: Group;
-    @Input() groupName:string;
-    @Input() groupId:number;
+    @Input() groupName: string;
+    @Input() groupId: number;
     @Input() faculties;
     @Input() specialities;
     @Output() refreshData = new EventEmitter();
 
     constructor(private modalService: NgbModal,
-                private crudService: CRUDService
-    ) {}
+                private crudService: CRUDService) {
+    }
 
     open(content) {
         this.modalService.open(content);
@@ -61,7 +61,7 @@ export class AddeditGroupComponent {
         }
         else if (this.action === "edit") {
             let editGroup = new Group(this.groupName);
-            this.crudService.updateData(this.entity,this.groupId, editGroup)
+            this.crudService.updateData(this.entity, this.groupId, editGroup)
                 .subscribe(
                     (res) => {
                         this.groups.group_name = res[0].group_name;
@@ -72,10 +72,10 @@ export class AddeditGroupComponent {
     }
 
     close() {
-        if(this.action === "create") {
+        if (this.action === "create") {
             this.groupName = "";
-        } else if(this.action === "edit"){
-           this.groupName = this.groups.group_name;
+        } else if (this.action === "edit") {
+            this.groupName = this.groups.group_name;
         }
     }
 
