@@ -13,8 +13,9 @@ export class ModalAddEditComponent {
     constructor(private activeModal: NgbActiveModal) {
     }
 
-    select(data){
+    valueDp(data) {
         this.config.select[0].selected = data;
+        console.log("model in parent" + data);
     }
 
 }

@@ -37,6 +37,7 @@ import { QuestionComponent } from "./app/subjects/question/question.component"
 import {TestsTabsetComponent} from "./app/studentpart/teststabset/tests-tabset.component";
 import {TestPlayerComponent} from "./app/test-player/test-player.component";
 import {UserProfileComponent} from "./app/studentpart/profile/user-profile.component";
+import { NgbdDatepickerCustomday } from './app/shared/components/datepicker/datepicker-customday';
 
 @NgModule({
     imports: [
@@ -71,7 +72,8 @@ import {UserProfileComponent} from "./app/studentpart/profile/user-profile.compo
         UserProfileComponent,
         TimeTableComponent,
         TestDetailComponent,
-        QuestionComponent
+        QuestionComponent,
+        NgbdDatepickerCustomday
     ],
     providers: [
         {provide: APP_BASE_HREF, useValue: "/"},
