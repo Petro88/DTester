@@ -1,20 +1,35 @@
+
 <div class="entity-container">
-    <test-bar
-            [entityName]="nameOfSubject"
-            [pageTitle]="pageTitle"
-            [addTitle]="addTitle"
-            (activate)="activate($event)"
-    ></test-bar>
-    <dt-table *ngIf="!noRecords"
-              [limit]="limit"
-              [page]="page"
-              [headers]="headers"
-              [actions]="actions"
-              [tableData]="entityData"
-              (activate)="activate($event)">
-    </dt-table>
-    <div *ngIf="noRecords" class="text-center">
-        Для вибраного предмету розклад не сформований
-    </div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-text">{{pageTitle}}</div>
+            <form class="navbar-form navbar-right">
+                <button type="button" class="btn btn-secondary"
+                        (click)="setLargeSize()">Large
+                </button>
+                <button type="button" class="btn btn-secondary"
+                        (click)="setSmallSize()">Small
+                </button>
+                <button type="button" class="btn btn-secondary"
+                        (click)="goBack()">Назад
+                </button>
+            </form>
+        </div>
+
+    </nav>
+    <chart-container
+            [color] = "data.color1"
+            [width]="data.width"
+            [height]="data.height"
+            [ngStyle]="{'float': 'left'}">
+
+    </chart-container>
+    <chart-container
+            [color] = "data.color2"
+            [width]="data.width"
+            [height]="data.height"
+            [ngStyle]="{'float': 'left'}"
+    ></chart-container>
+
+
 </div>
-<template ngbModalContainer></template>

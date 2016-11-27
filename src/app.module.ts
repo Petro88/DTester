@@ -48,6 +48,7 @@ import {TestBarComponent} from "./app/shared/components/test-bar/test-bar.compon
 import {NgbdAlertSelfclosing} from "./app/studentpart/alerts/alert.component";
 import {StudentTestResultsComponent} from "./app/studentpart/test-results/test-results.component";
 
+import { ChartComponent } from "./app/shared/chart/component/chart.component"
 
 
 @NgModule({
@@ -90,9 +91,8 @@ import {StudentTestResultsComponent} from "./app/studentpart/test-results/test-r
         TestListSheduleComponent,
         TestBarComponent,
         NgbdAlertSelfclosing,
-		StudentTestResultsComponent
-
-
+		StudentTestResultsComponent,
+        ChartComponent
     ],
     providers: [
         {provide: APP_BASE_HREF, useValue: "/"},
