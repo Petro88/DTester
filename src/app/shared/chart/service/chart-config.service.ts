@@ -9,7 +9,7 @@ export class ChartConfigService {
     }
 
     dataUnit = [2.345, 2.050, 1.45, 25.1, 25.1];
-    dataPercent = [70, 61, 49, 8, 5];
+    dataPercent = [70, 61, 49, 15, 14];
     categories = ['Seasonal Gardening', 'Fixing', 'Winter', 'Good', 'FD'];
     // width = 400;
     // height = 285;
@@ -21,10 +21,8 @@ export class ChartConfigService {
             chart: {
                 events: {
                     load: function () {
-                        var chart = this;
-
-                        chart.series[1].data.forEach((data) => {
-                                if (data.yBottom - data.plotY < 25)
+                        this.series[1].data.forEach((data) => {
+                                if (data.yBottom - data.plotY < 30)
                                     data.dataLabel.hide();
                             })
                     }
@@ -41,9 +39,9 @@ export class ChartConfigService {
                 text: 'MORE THAN 27 WEEKS SUPPLY',
                 margin: 0,
                 align: 'left',
-                x: 140,
+                x: 130,
                 style: {
-                    fontSize: '13px',
+                    fontSize: '12px',
                     color: "#A9A9A9",
                 }
             },
@@ -53,7 +51,7 @@ export class ChartConfigService {
                 labels: {
                     style: {
                         color: "#A9A9A9",
-                        fontSize: '13px'
+                        fontSize: '12px'
                     }
                 },
                 tickLength: 0,
@@ -81,7 +79,7 @@ export class ChartConfigService {
                     pointWidth: 33,
                     dataLabels: {
                         style: {
-                            "fontSize": "13px",
+                            "fontSize": "12px",
                             "fontWeight": "normal"
                         },
                         enabled: true,
@@ -110,7 +108,7 @@ export class ChartConfigService {
             responsive: {
                 rules: [{
                     condition: {
-                        maxWidth: 400
+                        maxWidth: 350
                     },
                     chartOptions: {
                         title: {

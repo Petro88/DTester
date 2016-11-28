@@ -1,4 +1,3 @@
-
 <div class="entity-container">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -15,21 +14,33 @@
                 </button>
             </form>
         </div>
-
     </nav>
-    <chart-container
-            [color] = "data.color1"
-            [width]="data.width"
-            [height]="data.height"
-            [ngStyle]="{'float': 'left'}">
+    <div
+            [ngStyle]="{
+            'display': 'flex',
+            'justify-content': 'space-around',
+            'align-items': 'center'
+            }">
+        <chart-container
+                [color]="data.color1"
+                [width]="data.width"
+                [height]="data.height">
 
-    </chart-container>
-    <chart-container
-            [color] = "data.color2"
-            [width]="data.width"
-            [height]="data.height"
-            [ngStyle]="{'float': 'left'}"
-    ></chart-container>
+        </chart-container>
+        <chart-container
+                [color]="data.color2"
+                [width]="data.width"
+                [height]="data.height">
 
+        </chart-container>
+        <div>
+            <form action="">
+                <p><b>Сортування</b></p>
+                <p><input name="unit" type="radio" value="$unit">$unit</p>
+                <p><input name="percent" type="radio" value="%percent" checked>%percent</p>
+                <p><input type="submit" value="Застосувати"></p>
+            </form>
+        </div>
+    </div>
 
 </div>

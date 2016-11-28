@@ -13,8 +13,8 @@ export class TimeTableComponent implements AfterViewInit {
     data = {
         color1: '#ED1B2D',
         color2: 'green',
-        width: 400,
-        height: 285,
+        width: 380,
+        height: 270,
         dataPercent: [70, 61, 49, 8, 5]
     };
 
