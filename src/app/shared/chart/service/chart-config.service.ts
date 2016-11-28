@@ -15,9 +15,20 @@ export class ChartConfigService {
     // height = 285;
     // colorSeries ='#ED1B2D';
 
-    public getBarChartConfig(data) {
-        return {
+    public getBarChartConfig(container, data) {
+        var chart;
+        return chart = new Highcharts.Chart(container, {
             chart: {
+                events: {
+                    load: function () {
+                        var chart = this;
+
+                        chart.series[1].data.forEach((data) => {
+                                if (data.yBottom - data.plotY < 25)
+                                    data.dataLabel.hide();
+                            })
+                    }
+                },
                 type: 'bar',
                 width: data.width,
                 height: data.height,
@@ -145,7 +156,7 @@ export class ChartConfigService {
                     },
                 }],
 
-        }
+        })
 
     }
 

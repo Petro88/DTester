@@ -34,18 +34,19 @@ export class ChartComponent implements OnInit, OnChanges {
     }
 
     redrawChart() {
-        Highcharts.chart(this.el.nativeElement, this.chartConfigService.getBarChartConfig(this.data));
+        // Highcharts.chart(this.el.nativeElement, this.chartConfigService.getBarChartConfig(this.data));
+        this.chartConfigService.getBarChartConfig(this.el.nativeElement, this.data);
     }
 
-    private hidePercent(chart) {
-        chart.series.forEach((i,serie) => {
-            serie.data.forEach((j,data) => {
-                if(data.yBottom - data.plotY < 25 && i > 0)
-                    data.dataLabel.destroy();
-            })
-        })
-    }
-
+    // private hidePercent(chart) {
+    //     chart.series.forEach((i,serie) => {
+    //         serie.data.forEach((j,data) => {
+    //             if(data.yBottom - data.plotY < 25 && i > 0)
+    //                 data.dataLabel.destroy();
+    //         })
+    //     })
+    // }
+    //
     // function(chart){
     //
     //     chart.series.forEach((i,serie) => {
