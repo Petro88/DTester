@@ -95,14 +95,13 @@ import {LoaderComponent} from "./app/shared/components/loader/loader.component";
         TestListSheduleComponent,
         TestBarComponent,
         NgbdAlertSelfclosing,
-<<<<<<< HEAD
+
 		StudentTestResultsComponent,
         ChartComponent
-=======
-        StudentTestResultsComponent,
+
         NotFoundComponent,
         LoaderComponent
->>>>>>> 714df14de6e3f7ed135111fce3b7ce70b80620bb
+
     ],
     providers: [
         LoginService,
