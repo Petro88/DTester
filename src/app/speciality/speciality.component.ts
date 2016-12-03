@@ -34,13 +34,9 @@ export class SpecialityComponent implements OnInit{
     public paginationSize = maxSize;
     public headers: any = headersSpeciality;
     public actions: any = actionsSpeciality;
-
-
-    public addTitle: string = "Створити новий факультет";
     public searchTitle: string = "Введіть дані для пошуку";
     public entityTitle: string = "Спеціальності";
     public selectLimit: string = "Виберіть кількість записів на сторінці";
-
     public entityData: any[] = [];
     private entityDataLength: number;
     public entity: string = "speciality";
@@ -48,11 +44,6 @@ export class SpecialityComponent implements OnInit{
     public offset: number = 0;
     public search: string = "";
     public page: number = 1;
-
-    constructor(private crudService: CRUDService,
-                private _router: Router,
-                private modalService: NgbModal) {
-    };
 
     public changeLimit = changeLimit;
     public pageChange = pageChange;
@@ -63,21 +54,24 @@ export class SpecialityComponent implements OnInit{
     public getRecordsRange = getRecordsRange;
     public findEntity = findEntity;
 
+    constructor(private crudService: CRUDService,
+                private _router: Router,
+                private modalService: NgbModal) {
+    };
+
     ngOnInit() {
         this.getCountRecords();
     }
 
-    private createTableConfig = (data: any )=> {
-        let tempArr: any[] = [];
+    private createTableConfig = (data: any ) => {
         let numberOfOrder: number;
-        data.forEach((item, i) => {
+        this.entityData = data.map((item, i) => {
             numberOfOrder = i + 1 + (this.page - 1) * this.limit;
-            let speciality: any = {};
+            const speciality: any = {};
             speciality.entity_id = item.speciality_id;
             speciality.entityColumns = [numberOfOrder, item.speciality_code, item.speciality_name];
-            tempArr.push(speciality);
+            return speciality;
         });
-        this.entityData = tempArr;
     };
 
     activate(data: any) {
@@ -101,15 +95,17 @@ export class SpecialityComponent implements OnInit{
 
 
     createCase() {
+        this.configAdd.list.forEach((item) => {
+            item.value = "";
+        });
         const modalRefAdd = this.modalService.open(ModalAddEditComponent);
         modalRefAdd.componentInstance.config = this.configAdd;
         modalRefAdd.result
             .then((data: any) => {
-                let newSpeciality: Speciality = new Speciality(data.list[0].value, data.list[1].value);
+                const newSpeciality: Speciality = new Speciality(data.list[0].value, data.list[1].value);
                 this.crudService.insertData(this.entity, newSpeciality)
                     .subscribe(response => {
-                        this.configAdd.list.forEach((item) => item.value = "");
-                        this.modalInfoConfig.infoString = `${data.list[0].value} успішно створено`;
+                        this.modalInfoConfig.infoString = `${data.list[1].value} успішно створено`;
                         this.successEventModal();
                         this.refreshData(data.action);
                     });
@@ -127,7 +123,7 @@ export class SpecialityComponent implements OnInit{
         modalRefEdit.componentInstance.config = this.configEdit;
         modalRefEdit.result
             .then((data: any) => {
-                let editedSpeciality: Speciality = new Speciality(data.list[0].value, data.list[1].value);
+                const editedSpeciality: Speciality = new Speciality(data.list[0].value, data.list[1].value);
                 this.crudService.updateData(this.entity, data.id, editedSpeciality)
                     .subscribe(response => {
                         this.modalInfoConfig.infoString = `Редагування пройшло успішно`;

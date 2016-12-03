@@ -44,27 +44,8 @@
     padding: 10px;
 }
 
-label {
-    float:left;
-    margin: 10px 0 10px 0;
-}
-
 .input-student-data {
     margin: 10px 20px 10px 0;
-
-    /*background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    color: #555;
-    display: block;
-    font-size: 14px;
-    height: 34px;
-    line-height: 1.42857;
-    padding: 6px 12px;
-    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-    width: 100%;*/
 }
 
 .button-create-refresh {
@@ -72,7 +53,6 @@ label {
     text-align: center;
     width: 100%;
     clear:both;
-    ;
 }
 
 .position-left {
@@ -87,22 +67,8 @@ label {
     width: 50%;
 }
 
-div.student-datas  input{
+div.student-datas input{
     width: 50%;
-}
-
-.password-eye{
-    display: inline-block;
-    cursor: pointer;
-    width: auto;
-    position: relative;
-    right: 25px;
-    color: #aaaaaa;
-    margin: 10px 0 10px 0;
-}
-
-.password-eye-input{
-    margin: 10px 0 10px 0;
 }
 
 div.input-foto input{
@@ -114,18 +80,62 @@ div.input-foto input{
     margin: 0 20px 0 0;
 }
 
-input.ng-invalid{
-    border-left: 5px solid red;
+.data-field{
+    width: 50%;
+    display: inline-block;
+    float: right;
+    text-align: left;
+    margin: 10px 20px 10px 0;
+    min-height: 22px;
 }
 
-input.ng-valid{
-    border-left: 5px solid green;
+.password-eye-input{
+    margin: 10px -3px 10px 0;
 }
 
-select.ng-invalid{
-    border-left: 5px solid red;
+.password-eye{
+    display: inline-block;
+    cursor: pointer;
+    width: 20px;
+    position: relative;
+    right: 25px;
+    color: #000000;
+    margin: 10px 0 10px 0;
 }
 
-select.ng-valid{
-    border-left: 5px solid green;
+label {
+    display: block;
+    float:left;
+    clear: right;
+    margin: 10px 0 10px 0;
 }
+
+.hint {
+    position: absolute;
+    bottom: 40px;
+    left: 40%;
+    text-align: left;
+    min-width: 131px;
+    z-index: 10;
+    padding: 5px;
+    color: #777;;
+    border: 1px solid #e77e7e;
+    border-radius: 3px;
+    background: #ffeff2;
+}
+
+.hint::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50px;
+    margin-left: -5px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: #777 transparent transparent transparent;
+}
+
+.data-field-enter {
+    position: relative;
+}
+

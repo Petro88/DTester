@@ -44,7 +44,8 @@ export const actionsGroup = [
 export const configAddGroup = {
     title: "Додати групу",
     list: [
-        {name: "Назва групи", value: "", title: "name", type: "text"}
+        {name: "Назва групи", value: "", title: "groupName", type: "text", formControlName: "groupName",
+            hint: "Назва групи повинна бути формату АА-00-0 або AAA-00-0"}
     ],
     action: "create",
     labelBtn: "Додати",
@@ -57,7 +58,8 @@ export const configAddGroup = {
 export const configEditGroup = {
     title: "Редагувати групу",
     list: [
-        {name: "Назва групи", value: "", title: "name", type: "text"}
+        {name: "Назва групи", value: "", title: "groupName", type: "text", formControlName: "groupName",
+            hint: "Назва групи повинна бути формату АА-00-0 або AAA-00-0"}
     ],
     action: "edit",
     labelBtn: "Редагувати",

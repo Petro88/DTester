@@ -33,7 +33,8 @@ export const actionsQuestion = [
 export const configAddQuestion = {
     title: "Додати нове завдання",
     list: [
-        {name: "Завдання", value: "", title: "task", type: "text", placeholder: "Опис завдання для тесту"},
+        {name: "Завдання", value: "", title: "task", type: "text", placeholder: "Опис завдання для тесту",
+            formControlName: "entityDescription", hint: "Максимальна довжина опису завдання складає 100 символів"},
     ],
     action: "create",
     labelBtn: "Додати",
@@ -48,7 +49,8 @@ export const configAddQuestion = {
 export const configEditQuestion = {
     title: "Редагувати завдання",
     list: [
-        {name: "Завдання", value: "", title: "task", type: "text"}
+        {name: "Завдання", value: "", title: "task", type: "text", placeholder: "Опис завдання для тесту",
+            formControlName: "entityDescription", hint: "Максимальна довжина опису завдання складає 100 символів"},
     ],
     action: "edit",
     labelBtn: "Редагувати",

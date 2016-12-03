@@ -17,7 +17,7 @@
               [tableData]="entityData"
               (activate)="activate($event)">
     </dt-table>
-    <ngb-pagination *ngIf="entityDataLength"
+    <ngb-pagination *ngIf="entityData.length"
                     [collectionSize]="entityDataLength"
                     [(page)]="page"
                     [maxSize]="paginationSize"

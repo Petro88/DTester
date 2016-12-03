@@ -62,8 +62,15 @@ module.exports = {
 
         new CopyWebpackPlugin([
             {
-                from: 'src/assets/img/background.jpg',
-                to: 'assets/background.jpg'
+                from: 'src/assets/img/',
+                to: 'assets/'
+            }
+        ]),
+
+        new CopyWebpackPlugin([
+            {
+                from: 'src/assets/img/',
+                to: 'assets/'
             }
         ])
     ]

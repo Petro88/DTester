@@ -22,6 +22,7 @@ import {
     addTitle, searchTitle, entityTitle, selectLimitTitle
 } from "../shared/constant";
 import {ConfigTableData} from "../shared/classes/configs/config-table-data";
+import {CommonService} from "../shared/services/common.service";
 
 
 @Component({
@@ -54,7 +55,8 @@ export class FacultyComponent implements OnInit {
 
     constructor(private crudService: CRUDService,
                 private _router: Router,
-                private modalService: NgbModal) {
+                private modalService: NgbModal,
+                private commonService: CommonService) {
     };
 
     public changeLimit = changeLimit;
@@ -110,14 +112,14 @@ export class FacultyComponent implements OnInit {
         modalRefAdd.componentInstance.config = this.configAdd;
         modalRefAdd.result
             .then((data: ConfigModalAddEdit) => {
-                let newFaculty: Faculty = new Faculty(data.list[0].value, data.list[1].value);
-                this.crudService.insertData(this.entity, newFaculty)
-                    .subscribe(() => {
-                        this.modalInfoConfig.infoString = `${data.list[0].value} успішно створено`;
-                        this.successEventModal();
-                        this.refreshData(data.action);
-                    });
-            }, null);
+                    let newFaculty: Faculty = new Faculty(data.list[0].value, data.list[1].value);
+                    this.crudService.insertData(this.entity, newFaculty)
+                        .subscribe(() => {
+                            this.commonService.openModalInfo(`${data.list[0].value} успішно створено`);
+                            this.refreshData(data.action);
+                        });
+                },
+                this.handleReject);
     };
 
     editCase(data: ConfigTableData) {
@@ -129,25 +131,24 @@ export class FacultyComponent implements OnInit {
         modalRefEdit.componentInstance.config = this.configEdit;
         modalRefEdit.result
             .then((data: ConfigModalAddEdit) => {
-                let editedFaculty: Faculty = new Faculty(data.list[0].value, data.list[1].value);
-                this.crudService.updateData(this.entity, +data.id, editedFaculty)
-                    .subscribe(() => {
-                        this.modalInfoConfig.infoString = `Редагування пройшло успішно`;
-                        this.successEventModal();
-                        this.refreshData(data.action);
-                    });
-            }, null);
+                    let editedFaculty: Faculty = new Faculty(data.list[0].value, data.list[1].value);
+                    this.crudService.updateData(this.entity, +data.id, editedFaculty)
+                        .subscribe(() => {
+                            this.commonService.openModalInfo(`Редагування пройшло успішно`);
+                            this.refreshData(data.action);
+                        });
+                },
+                this.handleReject);
     }
 
     deleteCase(data: ConfigTableData) {
-        this.modalInfoConfig.infoString = `Ви дійсно хочете видалити ${data.entityColumns[1]}?`;
-        this.modalInfoConfig.action = "confirm";
-        this.modalInfoConfig.title = "Видалення";
-        const modalRefDel = this.modalService.open(InfoModalComponent, {size: "sm"});
-        modalRefDel.componentInstance.config = this.modalInfoConfig;
-        modalRefDel.result
+        let message: string[] = [`Ви дійсно хочете видалити ${data.entityColumns[1]}?`, "confirm", "Попередження!"];
+        this.commonService.openModalInfo(...message)
             .then(() => {
-                this.delRecord(this.entity, +data.entity_id);
-            }, null);
+                    this.delRecord(this.entity, +data.entity_id);
+                },
+                this.handleReject);
     }
+
+    handleReject = () => {};
 }

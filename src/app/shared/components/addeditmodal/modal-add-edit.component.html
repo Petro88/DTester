@@ -8,47 +8,67 @@
     <div *ngIf="config.select">
         <div class="input-group input-group-add-edit" *ngFor="let item of config.select">
             <span class="input-group-addon modal-span">{{item.selectName}}:</span>
-            <select class="form-control" name="count"
+            <select class="form-control"
+                    name="count"
+                    required
                     [(ngModel)]="item.selected">
                 <option *ngFor="let option of item.selectItem">{{option}}</option>
             </select>
         </div>
     </div>
-        <div class="input-group input-group-add-edit" *ngFor="let item of config.list">
-            <span *ngIf="item.name !=='Дата початку' && item.name !== 'Дата кінця'" class="input-group-addon modal-span">
+    <div [formGroup]="addEditForm" class="input-group input-group-add-edit" *ngFor="let item of config.list">
+            <span *ngIf="item.name !=='Дата початку' && item.name !== 'Дата кінця'"
+                  class="input-group-addon modal-span">
                 {{item.name}}:
             </span>
-            <input *ngIf="item.name !=='Дата початку' && item.name !== 'Дата кінця'"
-                   [type]="item.type"
-                   class="form-control modalInput"
-                   [placeholder]="item.placeholder||''"
-                   [(ngModel)]="item.value">
-
-            <div class="input-group" *ngIf="item.name === 'Дата початку' || item.name === 'Дата кінця'">
-                <span class="input-group-addon modal-span">{{item.name}}:</span>
-                <input
-                        class="form-control"
-                        placeholder={{item.placeholder}}
-                        name="dp"
-                        [(ngModel)]="item.value"
-                        ngbDatepicker
-                        #d="ngbDatepicker"
-                        required
-                        [dayTemplate]="customDay"
-                        [markDisabled]="isDisabled">
-                <div class="input-group-addon" (click)="d.toggle()">
+        <input *ngIf="item.name !=='Дата початку' && item.name !== 'Дата кінця'"
+               [type]="item.type"
+               [formControlName]="item.formControlName"
+               class="form-control modalInput"
+               [placeholder]="item.placeholder||''"
+               [required]="config.action === 'create'"
+               [(ngModel)]="item.value">
+        <div class="hint"
+             *ngIf="addEditForm.controls[item.formControlName].invalid &&
+                 addEditForm.controls[item.formControlName].dirty &&
+                 addEditForm.controls[item.formControlName].value !== '' &&
+                 addEditForm.controls[item.formControlName].touched">
+            {{item.hint}}
+        </div>
+        <div class="passwords-hint" *ngIf="item.formControlName ==='cpassword' && !isSamePasswords">
+            Введені паролі не співпадають
+        </div>
+        <div class="hint" *ngIf="addEditForm.controls[item.formControlName].value === '' &&
+                                addEditForm.controls[item.formControlName].dirty &&
+                                addEditForm.controls[item.formControlName].invalid">
+            Це поле є обов'язковим
+        </div>
+        <div class="input-group" *ngIf="item.name === 'Дата початку' || item.name === 'Дата кінця'">
+            <span class="input-group-addon modal-span">{{item.name}}:</span>
+            <input
+                    class="form-control"
+                    placeholder={{item.placeholder}}
+                    name="dp"
+                    [formControlName]="item.formControlName"
+                    [(ngModel)]="item.value"
+                    ngbDatepicker
+                    #d="ngbDatepicker"
+                    required
+                    [dayTemplate]="customDay"
+                    [markDisabled]="isDisabled">
+            <div class="input-group-addon" (click)="d.toggle()">
                     <span class="glyphicon glyphicon-calendar" style="width: 1.2rem; height: 1rem; cursor: pointer;">
                     </span>
-                </div>
-                <template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
-                          let-disabled="disabled">
+            </div>
+            <template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
-                            [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                           [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
                          {{ date.day }}
                      </span>
-                </template>
-            </div>
+            </template>
         </div>
+    </div>
     <div *ngIf="config.img">
         <div class="input-group input-group-add-edit">
             <span class="input-group-addon modal-span">{{config.img.imgName}}:</span>
@@ -61,9 +81,11 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary"
-            (click)="activeModal.close(config)">{{config.labelBtn}}
+    <button type="button" (click)="activateForm()" class="btn btn-secondary" [disabled]="addEditForm.invalid">
+        {{config.labelBtn}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Відмінити</button>
 </div>
+
+
 

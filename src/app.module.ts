@@ -1,8 +1,7 @@
 import {NgModule}      from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
-import {FormsModule}   from "@angular/forms";
+import {FormsModule, ReactiveFormsModule}   from "@angular/forms";
 import {HttpModule}    from "@angular/http";
-import {APP_BASE_HREF} from "@angular/common";
 import {NgbModule}     from "@ng-bootstrap/ng-bootstrap";
 import {routing}       from "./app.routing";
 
@@ -32,9 +31,9 @@ import {EntityBarComponent}      from "./app/shared/components/entity-bar/entity
 import {TableComponent}          from "./app/shared/components/table/table.component";
 import {InfoModalComponent}      from "./app/shared/components/info-modal/info-modal.component";
 import {ModalAddEditComponent}   from "./app/shared/components/addeditmodal/modal-add-edit.component";
-import { TestDetailComponent }   from "./app/subjects/test-detail/test-detail.component";
-import { QuestionComponent }     from "./app/subjects/question/question.component";
-import { AnswerComponent } from "./app/subjects/answer/answer.component";
+import {TestDetailComponent}   from "./app/subjects/test-detail/test-detail.component";
+import {QuestionComponent}     from "./app/subjects/question/question.component";
+import {AnswerComponent} from "./app/subjects/answer/answer.component";
 
 import {TestsTabsetComponent}    from "./app/studentpart/teststabset/tests-tabset.component";
 import {TestPlayerComponent}     from "./app/test-player/test-player.component";
@@ -43,12 +42,16 @@ import {GroupService} from "./app/shared/services/group.service";
 import {TestPlayerService} from "./app/shared/services/test-player.service";
 import {TestListComponent} from "./app/studentpart/test-list/test-list.component";
 import {TestListSheduleComponent} from "./app/studentpart/test-list-shedule/test-list-shedule.component";
-
 import {TestBarComponent} from "./app/shared/components/test-bar/test-bar.component";
 import {NgbdAlertSelfclosing} from "./app/studentpart/alerts/alert.component";
+import {CommonService} from "./app/shared/services/common.service";
 import {StudentTestResultsComponent} from "./app/studentpart/test-results/test-results.component";
 
 import { ChartComponent } from "./app/shared/chart/component/chart.component"
+
+import {NotFoundComponent} from "./app/not-found/not-found.component";
+import {TestPlayerGuard} from "./app/shared/services/test-player.guard";
+import {LoaderComponent} from "./app/shared/components/loader/loader.component";
 
 
 @NgModule({
@@ -57,6 +60,7 @@ import { ChartComponent } from "./app/shared/chart/component/chart.component"
         FormsModule,
         HttpModule,
         NgbModule.forRoot(),
+        ReactiveFormsModule,
         routing
     ],
     declarations: [
@@ -91,11 +95,16 @@ import { ChartComponent } from "./app/shared/chart/component/chart.component"
         TestListSheduleComponent,
         TestBarComponent,
         NgbdAlertSelfclosing,
+<<<<<<< HEAD
 		StudentTestResultsComponent,
         ChartComponent
+=======
+        StudentTestResultsComponent,
+        NotFoundComponent,
+        LoaderComponent
+>>>>>>> 714df14de6e3f7ed135111fce3b7ce70b80620bb
     ],
     providers: [
-        {provide: APP_BASE_HREF, useValue: "/"},
         LoginService,
         CRUDService,
         GroupService,
@@ -103,7 +112,9 @@ import { ChartComponent } from "./app/shared/chart/component/chart.component"
         HttpModule,
         AuthAdminGuard,
         AuthStudentGuard,
-        TestPlayerService
+        TestPlayerGuard,
+        TestPlayerService,
+        CommonService
     ],
     entryComponents: [ModalAddEditComponent, InfoModalComponent],
     bootstrap: [AppComponent]

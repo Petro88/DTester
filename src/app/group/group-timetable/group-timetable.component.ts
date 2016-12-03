@@ -6,7 +6,7 @@ import {Subscription} from "rxjs";
 
 import {CRUDService} from "../../shared/services/crud.service";
 import {GroupService} from "../../shared/services/group.service";
-import {TimeTable} from "../../shared/classes/group-time-table";
+import {TimeTable} from "../../shared/classes/timetable";
 import {InfoModalComponent} from "../../shared/components/info-modal/info-modal.component";
 import {ModalAddEditComponent} from "../../shared/components/addeditmodal/modal-add-edit.component";
 import {
@@ -35,22 +35,20 @@ export class GroupTimetableComponent implements OnInit {
     public groupEntity: string = "Group";
     public subjectEntity: string = "subject";
     public subjects: any;
-
     public page: number = 1;
     public limit: number = 0;
 
+    public modalInfoConfig: any = modalInfoConfig;
     public headers: any = headersGroupTimeTable;
     public actions: any = actionsGroupTimeTable;
     public configAdd = configAddGroupTimeTable;
     public configEdit = configEditGroupTimeTable;
 
-    public modalInfoConfig: any = modalInfoConfig;
     public refreshData = refreshData;
     public successEventModal = successEventModal;
     private subscription: Subscription;
 
-    constructor(
-                private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private crudService: CRUDService,
                 private groupService: GroupService,
                 private location: Location,
@@ -59,12 +57,12 @@ export class GroupTimetableComponent implements OnInit {
             data => {
                 this.groupId = data["groupId"];
             });
-    };
+    }
 
     ngOnInit() {
         this.createTitle();
         this.getRecords();
-    }
+    };
 
     createTitle() {
         this.crudService.getRecordById(this.groupEntity, this.groupId)
@@ -75,7 +73,18 @@ export class GroupTimetableComponent implements OnInit {
                 },
                 error => console.log("error: ", error)
             );
-    }
+    };
+
+    getRecords() {
+        this.crudService.getRecords(this.subjectEntity)
+            .subscribe(
+                data => {
+                    this.subjects = data;
+                    this.getGroupTimeTables();
+                },
+                error => console.log("error: ", error)
+            );
+    };
 
     getGroupTimeTables() {
         this.groupService.getTimeTablesForGroup(this.groupId)
@@ -83,7 +92,6 @@ export class GroupTimetableComponent implements OnInit {
                 data => {
                     if (data.response === "no records") {
                         this.noRecords = true;
-                        return;
                     } else {
                         this.noRecords = false;
                         for (let i in data) {
@@ -95,32 +103,19 @@ export class GroupTimetableComponent implements OnInit {
                         }
                         this.createTableConfig(data);
                     }
-
                 },
                 error => console.log("error: ", error));
-    }
-
-    getRecords() {
-        this.crudService.getRecords(this.subjectEntity)
-            .subscribe(
-                data => {
-                    this.subjects = data;
-                    this.getGroupTimeTables();
-                },
-                error => console.log("error: ", error)
-            );
-    }
+    };
 
     deleteGroupTimeTable(entity: string, id: number): void {
-        this.crudService
-            .delRecord(this.entity, id)
+        this.crudService.delRecord(this.entity, id)
             .subscribe(
                 () => {
                     this.getGroupTimeTables();
                 },
                 error => console.log("error: ", error)
             );
-    }
+    };
 
     activate(data: any) {
         switch (data.action) {
@@ -134,15 +129,15 @@ export class GroupTimetableComponent implements OnInit {
                 this.createCase();
                 break;
         }
-    }
+    };
 
-    substituteNameSubjectsWithId(data) {
+    substituteSubjectsNamesWithId(data) {
         this.subjects.forEach((item) => {
             if (item.subject_name === data.select[0].selected) {
                 data.select[0].selected = item.subject_id;
             }
         });
-    }
+    };
 
     createCase() {
         this.configAdd.list.forEach((item) => {
@@ -157,12 +152,12 @@ export class GroupTimetableComponent implements OnInit {
         modalRefAdd.componentInstance.config = this.configAdd;
         modalRefAdd.result
             .then((data: any) => {
-                this.substituteNameSubjectsWithId(data);
-                let newGroupTimeTable: TimeTable = new TimeTable(
+                this.substituteSubjectsNamesWithId(data);
+                const newGroupTimeTable: TimeTable = new TimeTable(
                     this.groupId,
-                    data.list[0].value = `${data.list[0].value.year}-${data.list[0].value.month}-${data.list[0].value.day}`,
+                    `${data.list[0].value.year}-${data.list[0].value.month}-${data.list[0].value.day}`,
                     data.list[1].value,
-                    data.list[2].value = `${data.list[2].value.year}-${data.list[2].value.month}-${data.list[2].value.day}`,
+                    `${data.list[2].value.year}-${data.list[2].value.month}-${data.list[2].value.day}`,
                     data.list[3].value,
                     data.select[0].selected
                 );
@@ -175,23 +170,28 @@ export class GroupTimetableComponent implements OnInit {
             }, () => {
                 return;
             });
-    }
+    };
 
     editCase(data) {
-        let newStartDate = {
-            "year": +data.entityColumns[2].slice(2, 6),
-            "month": +data.entityColumns[2].slice(7, 9),
-            "day": +data.entityColumns[2].slice(10, 12)
+        let nDate = new Date(data.entityColumns[2]);
+        const startDate = {
+            "year": nDate.getFullYear(),
+            "month": nDate.getMonth() + 1,
+            "day": nDate.getDate()
         };
-        let newEndDate = {
-            "year": +data.entityColumns[2].slice(22, 26),
-            "month": +data.entityColumns[2].slice(27, 29),
-            "day": +data.entityColumns[2].slice(30, 32)
+
+        nDate = new Date(data.entityColumns[4]);
+        const endDate = {
+            "year": nDate.getFullYear(),
+            "month": nDate.getMonth() + 1,
+            "day": nDate.getDate()
         };
-        this.configEdit.list[0].value = newStartDate;
-        this.configEdit.list[1].value = data.entityColumns[2].slice(13, 18);
-        this.configEdit.list[2].value = newEndDate;
-        this.configEdit.list[3].value = data.entityColumns[2].slice(33, 38);
+
+        this.configEdit.list[0].value = startDate;
+        this.configEdit.list[1].value = data.entityColumns[3];
+        this.configEdit.list[2].value = endDate;
+        this.configEdit.list[3].value = data.entityColumns[5];
+
         this.configEdit.select[0].selected = data.entityColumns[1];
         this.configEdit.id = data.entity_id;
         this.configEdit.select[0].selectItem = [];
@@ -202,12 +202,12 @@ export class GroupTimetableComponent implements OnInit {
         modalRefEdit.componentInstance.config = this.configEdit;
         modalRefEdit.result
             .then((data: any) => {
-                this.substituteNameSubjectsWithId(data);
-                let editedGroupTimeTable: TimeTable = new TimeTable(
+                this.substituteSubjectsNamesWithId(data);
+                const editedGroupTimeTable: TimeTable = new TimeTable(
                     this.groupId,
-                    data.list[0].value = `${data.list[0].value.year}-${data.list[0].value.month}-${data.list[0].value.day}`,
+                    `${data.list[0].value.year}-${data.list[0].value.month}-${data.list[0].value.day}`,
                     data.list[1].value,
-                    data.list[2].value = `${data.list[2].value.year}-${data.list[2].value.month}-${data.list[2].value.day}`,
+                    `${data.list[2].value.year}-${data.list[2].value.month}-${data.list[2].value.day}`,
                     data.list[3].value,
                     data.select[0].selected
                 );
@@ -234,21 +234,24 @@ export class GroupTimetableComponent implements OnInit {
             }, () => {
                 return;
             });
-    }
+    };
 
     private createTableConfig = (data: any) => {
-        const tempArr: any[] = [];
         let numberOfOrder: number;
         if (data.length) {
-            data.forEach((item, i) => {
+            this.entityData = data.map((item, i) => {
                 numberOfOrder = i + 1 + (this.page - 1) * this.limit;
                 const groupTimetable: any = {};
-                const date = `З ${item.start_date} ${item.start_time.slice(0, 5)} по ${item.end_date} ${item.end_time.slice(0, 5)}`;
                 groupTimetable.entity_id = item.timetable_id;
-                groupTimetable.entityColumns = [numberOfOrder, item.subject_name, date];
-                tempArr.push(groupTimetable);
+                groupTimetable.entityColumns = [
+                    numberOfOrder,
+                    item.subject_name,
+                    item.start_date,
+                    item.start_time.slice(0, 5),
+                    item.end_date,
+                    item.end_time.slice(0, 5)];
+                return groupTimetable;
             });
-            this.entityData = tempArr;
         } else {
             this.noRecords = true;
         }
@@ -256,9 +259,9 @@ export class GroupTimetableComponent implements OnInit {
 
     goBack(): void {
         this.location.back();
-    }
+    };
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-}
+    };
+};

@@ -29,7 +29,6 @@ export class GroupResultComponent implements OnInit {
     public entityDataWithNames: any ;
     public headers: any = headersGroupResult;
     public actions: any = actionsGroupResult;
-
     private subscription: Subscription;
 
     constructor(private _router: Router,
@@ -67,11 +66,10 @@ export class GroupResultComponent implements OnInit {
                         this.noRecords = true;
                     } else {
                         this.noRecords = false;
-                        let ids = [];
-                        data.forEach(item => {
-                            ids.push(item.test_id);
+                        const ids = data.map(item => {
+                            return item.test_id;
                         });
-                        let entityManagerTests = new EntityManagerBody(this.testEntity, ids);
+                        const entityManagerTests = new EntityManagerBody(this.testEntity, ids);
                         this.getTestsDetails(entityManagerTests);
                     }
                 },
@@ -85,11 +83,10 @@ export class GroupResultComponent implements OnInit {
             .subscribe(
                 data => {
                     this.entityDataWithNames = data;
-                    let ids = [];
-                    data.forEach(item => {
-                        ids.push(item.subject_id);
+                    const ids = data.map(item => {
+                        return item.subject_id;
                     });
-                    let entityManagerSubjects = new EntityManagerBody(this.subjectEntity, ids);
+                    const entityManagerSubjects = new EntityManagerBody(this.subjectEntity, ids);
                     this.getSubjectNames(entityManagerSubjects);
                 },
                 error => console.log("error: ", error)
@@ -115,7 +112,7 @@ export class GroupResultComponent implements OnInit {
             }
         }
         this.createTableConfig(this.entityDataWithNames);
-    }
+    };
 
     activate(data: any): void {
         switch (data.action) {
@@ -126,31 +123,29 @@ export class GroupResultComponent implements OnInit {
                 );
                 break;
         }
-    }
-
-    goBack(): void {
-        this.location.back();
-    }
+    };
 
     private createTableConfig = (data: any) => {
-        let tempArr: any[] = [];
         let numberOfOrder: number;
         if (data.length) {
-            data.forEach((item, i) => {
+            this.entityData = data.map((item, i) => {
                 numberOfOrder = i + 1 + (this.page - 1) * this.limit;
-                let groupResult: any = {};
+                const groupResult: any = {};
                 groupResult.entity_id = item.test_id;
                 groupResult.subject_id = item.subject_id;
                 groupResult.entityColumns = [numberOfOrder, item.subject_name, item.test_name];
-                tempArr.push(groupResult);
+                return groupResult;
             });
-            this.entityData = tempArr;
         } else {
             this.noRecords = true;
         }
     };
 
+    goBack(): void {
+        this.location.back();
+    };
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
+    };
 }

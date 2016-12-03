@@ -28,13 +28,6 @@ import {
 })
 export class AdminUserComponent implements OnInit {
 
-    public modalInfoConfig: any = modalInfoConfig;
-    public configAdd = configAddAdminUser;
-    public configEdit = configEditAdminUser;
-    public paginationSize = maxSize;
-    public headers: any = headersAdminUser;
-    public actions: any = actionsAdminUser;
-    public addTitle: string = "Додати адміністратора";
     public searchTitle: string = "Введіть дані для пошуку";
     public entityTitle: string = "Адміністратори";
     public selectLimit: string = "Виберіть кількість записів на сторінці";
@@ -46,9 +39,12 @@ export class AdminUserComponent implements OnInit {
     public page: number = 1;
     public offset: number = 0;
 
-    constructor(private crudService: CRUDService,
-                private modalService: NgbModal) {
-    };
+    public modalInfoConfig: any = modalInfoConfig;
+    public configAdd = configAddAdminUser;
+    public configEdit = configEditAdminUser;
+    public paginationSize = maxSize;
+    public headers: any = headersAdminUser;
+    public actions: any = actionsAdminUser;
 
     public changeLimit = changeLimit;
     public pageChange = pageChange;
@@ -59,22 +55,23 @@ export class AdminUserComponent implements OnInit {
     public getRecordsRange = getRecordsRange;
     public findEntity = findEntity;
 
+    constructor(private crudService: CRUDService,
+                private modalService: NgbModal) {
+    };
 
     ngOnInit(): void {
         this.getCountRecords();
-    }
+    };
 
     private createTableConfig = (data: any) => {
-        let tempArr: any[] = [];
         let numberOfOrder: number;
-        data.forEach((item, i )=> {
-            numberOfOrder = i + 1 + (this.page - 1) * this.limit;
-            let adminUser: any = {};
-            adminUser.entity_id = item.id;
-            adminUser.entityColumns = [numberOfOrder, item.username, item.email];
-            tempArr.push(adminUser);
+        this.entityData = data.map((item, i ) => {
+                numberOfOrder = i + 1 + (this.page - 1) * this.limit;
+                const adminUser: any = {};
+                adminUser.entity_id = item.id;
+                adminUser.entityColumns = [numberOfOrder, item.username, item.email];
+                return adminUser;
         });
-        this.entityData = tempArr;
     };
 
     activate(data: any) {
@@ -88,39 +85,49 @@ export class AdminUserComponent implements OnInit {
             case "delete":
                 this.deleteCase(data);
                 break;
-        }
-    }
+        };
+    };
 
-    createCase() {
+    createCase(userToChange?: User) {
+        this.configAdd.list.forEach((item) => {
+            item.value = "";
+        });
+        if (userToChange) {
+            this.configAdd.list[0].value = userToChange.username;
+            this.configAdd.list[1].value = userToChange.email;
+            this.configAdd.list[2].value = userToChange.password;
+            this.configAdd.list[3].value = userToChange.password_confirm;
+        }
         const modalRefAdd = this.modalService.open(ModalAddEditComponent);
         modalRefAdd.componentInstance.config = this.configAdd;
         modalRefAdd.result
             .then((data: any) => {
-                if (data.list[2].value === data.list[3].value) {
-                    let newAdminUser: User = new User(data.list[0].value, data.list[1].value, data.list[2].value);
-                    this.crudService.insertData(this.entity, newAdminUser)
-                        .subscribe(response => {
+                const newAdminUser: User = new User(
+                    data.list[0].value,
+                    data.list[1].value,
+                    data.list[2].value,
+                    data.list[3].value);
+                this.crudService.insertData(this.entity, newAdminUser)
+                    .subscribe(response => {
+                            this.modalInfoConfig.infoString = `${data.list[0].value} успішно створено`;
                             this.configAdd.list.forEach((item) => {
                                 item.value = "";
                             });
-                            this.modalInfoConfig.infoString = `${data.list[0].value} успішно створено`;
                             this.successEventModal();
                             this.refreshData(data.action);
-                        });
-                } else {
-                    data.list[2].value = "";
-                    data.list[3].value = "";
-                    this.modalInfoConfig.infoString = `Введені паролі не співпадають`;
-                    this.createCase();
-                    this.successEventModal();
-                }
+                    }, error => {
+                            this.modalInfoConfig.infoString = `Пароль та логін повинні бути унікальними`;
+                            this.createCase(newAdminUser);
+                            this.successEventModal();
+                        }
+                    );
             }, () => {
                 return;
             });
     };
 
     editCase(data: any) {
-        let editData = data;
+        const editData = data;
         this.configEdit.list.forEach((item, i) => {
             item.value = data.entityColumns[i + 1];
         });
@@ -129,28 +136,29 @@ export class AdminUserComponent implements OnInit {
         modalRefEdit.componentInstance.config = this.configEdit;
         modalRefEdit.result
             .then((data: any) => {
-                if (data.list[2].value === data.list[3].value) {
-                    let editedAdminUser: User = new User(data.list[0].value, data.list[1].value, data.list[2].value);
-                    this.crudService.updateData(this.entity, data.id, editedAdminUser)
-                        .subscribe(response => {
+                let editedAdminUser: User = new User(
+                    data.list[0].value,
+                    data.list[1].value,
+                    data.list[2].value,
+                    data.list[3].value);
+                this.crudService.updateData(this.entity, data.id, editedAdminUser)
+                    .subscribe(response => {
                             this.modalInfoConfig.infoString = `Редагування пройшло успішно`;
                             this.successEventModal();
                             this.refreshData(data.action);
-                        });
-                } else {
-                    data.list[2].value = "";
-                    data.list[3].value = "";
-                    this.modalInfoConfig.infoString = `Введені паролі не співпадають, спробуйте ще раз`;
-                    this.editCase(editData);
-                    this.successEventModal();
-                }
+                    }, error => {
+                            this.modalInfoConfig.infoString = `Пароль та логін повинні бути унікальними`;
+                            this.editCase(editData);
+                            this.successEventModal();
+                    }
+                    );
             }, () => {
                 return;
             });
-    }
+    };
 
     deleteCase(data: any) {
-        this.modalInfoConfig.infoString = `Ви дійсно хочете видати ${data.entityColumns[0]}?`;
+        this.modalInfoConfig.infoString = `Ви дійсно хочете видати ${data.entityColumns[1]}?`;
         this.modalInfoConfig.action = "confirm";
         this.modalInfoConfig.title = "Видалення";
         const modalRefDel = this.modalService.open(InfoModalComponent, {size: "sm"});
@@ -161,6 +169,6 @@ export class AdminUserComponent implements OnInit {
             }, () => {
                 return;
             });
-    }
+    };
 
-}
+};

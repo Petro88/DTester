@@ -1,12 +1,13 @@
 import {Component, OnInit, Input} from "@angular/core";
 import {CRUDService} from "../../shared/services/crud.service";
 import {SubjectService} from "../../shared/services/subject.service";
+import {StudentPageService} from "../../shared/services/student-page.service";
 import {headersStudentTestList, activeTests, activeTimeTable} from "../../shared/constant/student-test-list";
 
 @Component({
     selector: "test-list-shedule",
     templateUrl: "./test-list-shedule.component.html",
-
+    providers: [StudentPageService]
 })
 
 export class TestListSheduleComponent implements OnInit {
@@ -17,11 +18,12 @@ export class TestListSheduleComponent implements OnInit {
     public headers: any = headersStudentTestList;
     public entityData = [];
     public dateNow;
-    public dateUser = "";
+    public dateUser = "today";
 
 
     constructor(private _commonService: CRUDService,
-                private _subjectService: SubjectService) {
+                private _subjectService: SubjectService,
+                private _studentService: StudentPageService) {
     }
 
     ngOnInit() {
@@ -30,17 +32,15 @@ export class TestListSheduleComponent implements OnInit {
 
     getTimeTable(startDay, endDay) {
         this.entityData.length = 0;
-
-
         this._commonService.getTimeTableForGroup(this.groupId)
             .subscribe(data => {
                     this.activeTimeTable = data;
-
                     for (let i = 0; i < this.activeTimeTable.length; i++) {
-
-
                         if ((this.activeTimeTable[i].start_date >= startDay) &&
-                            (this.activeTimeTable[i].start_date <= endDay)) {
+                            (this.activeTimeTable[i].start_date <= endDay) && !(startDay === this.dateNow.date &&
+                            (this.activeTimeTable[i].start_time <= this.dateNow.time &&
+                            this.activeTimeTable[i].end_time >= this.dateNow.time))
+                        ) {
                             this._commonService.getRecordById("subject", this.activeTimeTable[i].subject_id)
                                 .subscribe(subject => {
                                     let newSubjectName = subject[0].subject_name;
@@ -51,9 +51,14 @@ export class TestListSheduleComponent implements OnInit {
                                                 if (this.activeTests[j].enabled === "1") {
                                                     this.entityData.push({
                                                         entityColumns: [
-                                                            newSubjectName,
+                                                            newSubjectName + ": " +
                                                             this.activeTests[j].test_name,
-                                                            this.activeTimeTable[i].start_date]
+                                                            this.activeTimeTable[i].start_date.replace(/(\d+)-(\d+)-(\d+)/, '$3-$2-$1') + " / " +
+                                                            this.activeTimeTable[i].start_time,
+                                                            this.activeTimeTable[i].end_date.replace(/(\d+)-(\d+)-(\d+)/, '$3-$2-$1') + " / " +
+                                                            this.activeTimeTable[i].end_time,
+                                                            this.activeTests[j].tasks,
+                                                            this.activeTests[j].time_for_test]
                                                     });
                                                 }
                                             }
@@ -73,30 +78,30 @@ export class TestListSheduleComponent implements OnInit {
             .subscribe(date=> {
                 let today = date;
                 today = +today.curtime - today.offset;
-                this.dateNow = this.getTimeStamp(today);
+                this.dateNow = this._studentService.getTimeStamp(today);
 
-                let startDay = this.dateNow;
-                let endDay = this.dateNow;
+                let startDay = this.dateNow.date;
+                let endDay = this.dateNow.date;
                 switch (this.dateUser) {
                     case "today":
-                        startDay = this.dateNow;
-                        endDay = this.dateNow;
+                        startDay = this.dateNow.date;
+                        endDay = this.dateNow.date;
                         break;
                     case "tomorrow":
-                        startDay = this.getTimeStamp(today + 86400);
-                        endDay = this.getTimeStamp(today + 86400);
+                        startDay = this._studentService.getTimeStamp(today + 86400).date;
+                        endDay = this._studentService.getTimeStamp(today + 86400).date;
                         break;
                     case "week":
-                        startDay = this.getTimeStamp(today + 86400);
-                        endDay = this.getTimeStamp(today + 7 * 86400);
+                        startDay = this._studentService.getTimeStamp(today + 86400).date;
+                        endDay = this._studentService.getTimeStamp(today + 7 * 86400).date;
                         break;
                     case "month":
-                        startDay = this.getTimeStamp(today + 86400);
-                        endDay = this.getTimeStamp(today + 30 * 86400);
+                        startDay = this._studentService.getTimeStamp(today + 86400).date;
+                        endDay = this._studentService.getTimeStamp(today + 30 * 86400).date;
                         break;
                     default:
-                        startDay = this.getTimeStamp(today + 86400);
-                        endDay = this.getTimeStamp(today + 365 * 86400);
+                        startDay = this._studentService.getTimeStamp(today + 86400).date;
+                        endDay = this._studentService.getTimeStamp(today + 365 * 86400).date;
                 }
 
                 this.getTimeTable(startDay, endDay);
@@ -104,14 +109,6 @@ export class TestListSheduleComponent implements OnInit {
 
     }
 
-    getTimeStamp(sec) {
-        let mili = +sec * 1000;
-        let myDate = new Date(mili);
-        let formatDate = myDate.getFullYear() + "-" + ("0" + (myDate.getMonth() + 1)).slice(-2) +
-            "-" + ("0" + myDate.getDate()).slice(-2);
-
-        return formatDate;
-    }
 
 }
 

@@ -8,7 +8,7 @@ import {CRUDService} from "../shared/services/crud.service";
 import {EntityManagerBody} from "../shared/classes/entity-manager-body";
 import {Observable, Subscription} from "rxjs/Rx";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, Form} from "@angular/forms";
 import {InfoModalComponent} from "../shared/components/info-modal/info-modal.component";
 
 import {
@@ -40,14 +40,14 @@ export class StudentProfileComponent implements OnInit {
     public statusView: boolean = true;
     public action: Boolean;
 
-    public passwordStatus: boolean = true;
     public passwordStatusText: string = "password";
     public editSaveButtonName: string = "Редагувати дані";
 
-    private subscription: Subscription;
+    public mypattern: string = "^[a-zA-ZЄЇІїіА-ЩЬЮ-Яєа-щью-яҐґ0-9]+[a-zA-ZЄЇІїіА-ЩЬЮ-Яєа-щью-яҐґ0-9.!#$%&’*+/=?^_`{|}~-]*[a-zA-ZЄЇІїіА-ЩЬЮ-Яєа-щью-яҐґ0-9]*@[a-zA-ZЄЇІїіА-ЩЬЮ-Яєа-щью-яҐґ0-9]+(?:([a-zA-ZЄЇІїіА-ЩЬЮ-Яєа-щью-яҐґ0-9-]*[\.?]))+([a-zA-ZЄЇІїіА-ЩЬЮ-Яєа-щью-яҐґ]{2,6})$";
 
     @ViewChild("newFotoSrc") newFotoSrc: ElementRef;
     @ViewChild("inputFile") inputFile: ElementRef;
+    @ViewChild("myform") myform: any;
 
     constructor(private route: ActivatedRoute,
                 private _commonService: CRUDService,
@@ -61,7 +61,6 @@ export class StudentProfileComponent implements OnInit {
         });
         if (this.user_id) {
             this.action = false;
-            this.student = new Student();
             this.getData();
             this.getFacultyName();
         }
@@ -78,8 +77,8 @@ export class StudentProfileComponent implements OnInit {
 
     newStudent() {
         this.student = new Student;
-        this.newFotoSrc.nativeElement.src = "";
-        // this.inputFile.nativeElement.value = "";
+        this.student.photo = "assets/profile.png";
+        this.newFotoSrc.nativeElement.src = "assets/profile.png";
         this.getFacultyName();
     }
 
@@ -96,23 +95,20 @@ export class StudentProfileComponent implements OnInit {
         dataForRequest.group_id = this.student.group_id;
         dataForRequest.plain_password = this.student.plain_password;
         dataForRequest.photo = this.newFotoSrc.nativeElement.src;
-
         this._commonService.insertData(this.entity, dataForRequest)
             .subscribe(data => {
                     if (data.response === "ok") {
                         this.modalInfoConfig.infoString = `Створено профіль студента ${dataForRequest.student_surname} ${dataForRequest.student_name} ${dataForRequest.student_fname}`;
                         this.successEventModal();
-                        console.log(" this.newFotoSrc.nativeElement.src",  this.newFotoSrc.nativeElement.src);
-                        this.newFotoSrc.nativeElement.src = "";
-                        console.log(" this.newFotoSrc.nativeElement.src",  this.newFotoSrc.nativeElement.src);
                         this.newStudent();
-                    }
-                    if (data.response === "Failed to validate array") {
-                        this.modalInfoConfig.infoString = `Перевірте правильність введених даних`;
-                        this.successEventModal();
+                        this.myform.reset();
                     }
                 },
-                error => console.log("error: ", error)
+                error => {
+                    console.log("error: ", error);
+                    this.modalInfoConfig.infoString = "Перевірте правильність введених даних";
+                    this.successEventModal();
+                }
             );
         }
 
@@ -144,6 +140,7 @@ export class StudentProfileComponent implements OnInit {
     }
 
     getData() {
+        this.student = new Student();
         Observable.forkJoin(
             this._commonService.getRecordById(this.entity, this.user_id),
             this._commonService.getRecordById(this.entityUser, this.user_id)
@@ -209,13 +206,20 @@ export class StudentProfileComponent implements OnInit {
                     if (data.response === "ok") {
                         this.modalInfoConfig.infoString = `Дані студента ${dataForUpdateStudent.student_surname} ${dataForUpdateStudent.student_name} ${dataForUpdateStudent.student_fname} обновленно`;
                         this.successEventModal();
+                        this.editSaveButtonName = "Редагувати дані";
+                        this.statusView = !this.statusView;
                     }
                     else {
                         this.modalInfoConfig.infoString = `Помилка обновлення. Перевірте дані`;
                         this.successEventModal();
                     }
                 },
-                error => console.log("error: ", error)
+                error => {
+                    console.log("error: ", error);
+                    this.modalInfoConfig.infoString = "Перевірте правильність введених даних";
+                    this.successEventModal();
+                    this.editSaveButtonName = "Зберегти дані";
+                }
             );
     }
 
@@ -235,24 +239,22 @@ export class StudentProfileComponent implements OnInit {
     }
 
     showPassword() {
-        if (this.passwordStatus) {
+        if (this.passwordStatusText === "password") {
             this.passwordStatusText = "text";
         }
         else {
             this.passwordStatusText = "password";
         }
-        this.passwordStatus = !this.passwordStatus;
     }
 
     editSaveStudentProfile() {
         if (this.statusView) {
             this.editSaveButtonName = "Зберегти дані";
+            this.statusView = !this.statusView;
         }
         else {
             this.updateStudent();
-            this.editSaveButtonName = "Редагувати дані";
         }
-        this.statusView = !this.statusView;
     }
 
     deleteStudent() {

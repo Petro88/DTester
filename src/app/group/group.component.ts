@@ -35,7 +35,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     public headers: any = headersGroup;
     public actions: any = actionsGroup;
 
-    public addTitle: string = "Створити нову групу";
     public searchTitle: string = "Введіть дані для пошуку";
     public entityTitle: string = "Групи";
     public selectLimit: string = "Виберіть кількість записів на сторінці";
@@ -59,11 +58,11 @@ export class GroupComponent implements OnInit, OnDestroy {
 
     public noRecords: boolean = false;
     public sortHide: boolean = false;
-    private subscription: Subscription;
     public facultiesNamesIDs: any[] = [];
     public specialitiesNamesIDs: any[] = [];
     public defaultFacultySelect: string = "Виберіть факультет";
     public defaultSpecialitySelect: string = "Виберіть спеціальність";
+    private subscription: Subscription;
 
     public changeLimit = changeLimit;
     public pageChange = pageChange;
@@ -123,19 +122,22 @@ export class GroupComponent implements OnInit, OnDestroy {
             this.isSelectedBy = true;
             this.entityTitle = `Групи факультету: ${this.facultyName}`;
             this.getGroupsByFaculty(this.facultyId);
-        }
-        else {
+        } else {
             this.getCountRecords();
         }
     }
 
     getRecordsRange() {
-        this.noRecords = false;
         this.crudService.getRecordsRange(this.entity, this.limit, this.offset)
             .subscribe(
                 data => {
-                    this.entityDataWithNames =  data;
-                    this.getFacultyName();
+                    if (data.response === "no records") {
+                        this.noRecords = true;
+                    } else {
+                        this.noRecords = false;
+                        this.entityDataWithNames = data;
+                        this.getFacultyName();
+                    }
                 },
                 error => console.log("error: ", error));
     };
@@ -143,11 +145,10 @@ export class GroupComponent implements OnInit, OnDestroy {
     getGroupsByFaculty(data: any) {
         if (data === "default") {
             this.sortHide = false;
-            this.noRecords = false;
             this.getRecordsRange();
         } else {
-            this.sortHide = true;
             this.noRecords = false;
+            this.sortHide = true;
             this.crudService.getGroupsByFaculty(data)
                 .subscribe(
                     data => {
@@ -165,7 +166,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     getGroupsBySpeciality(data: any) {
         if (data === "default") {
             this.sortHide = false;
-            this.noRecords = false;
             this.getRecordsRange();
         } else {
             this.sortHide = true;
@@ -239,21 +239,17 @@ export class GroupComponent implements OnInit, OnDestroy {
                     this.createTableConfig(data);
                 }, error => console.log("error: ", error));
         }
-
-
     };
 
     private createTableConfig = (data: any) => {
-        let tempArr: any[] = [];
         let numberOfOrder: number;
-        data.forEach((item, i) => {
+        this.entityData = data.map((item, i) => {
             numberOfOrder = i + 1 + (this.page - 1) * this.limit;
-            let group: any = {};
+            const group: any = {};
             group.entity_id = item.group_id;
             group.entityColumns = [numberOfOrder, item.group_name, item.faculty_name, item.speciality_name];
-            tempArr.push(group);
+            return group;
         });
-        this.entityData = tempArr;
     };
 
     activate(data: any) {
@@ -288,7 +284,7 @@ export class GroupComponent implements OnInit, OnDestroy {
         }
     }
 
-    substituteFacultiesNamesOnId(data) {
+    substituteFacultiesNamesWithId(data) {
         this.facultiesNamesIDs.forEach((item) => {
             if (item.name === data.select[0].selected) {
                 data.select[0].selected = item.id;
@@ -296,7 +292,7 @@ export class GroupComponent implements OnInit, OnDestroy {
         });
     }
 
-    substituteSpecialitiesNamesOnId(data) {
+    substituteSpecialitiesNamesWithId(data) {
         this.specialitiesNamesIDs.forEach((item) => {
             if (item.name === data.select[1].selected) {
                 data.select[1].selected = item.id;
@@ -322,11 +318,11 @@ export class GroupComponent implements OnInit, OnDestroy {
         modalRefAdd.componentInstance.config = this.configAdd;
         modalRefAdd.result
             .then((data: any) => {
-                this.substituteSpecialitiesNamesOnId(data);
-                this.substituteFacultiesNamesOnId(data);
-                let newGroup: Group = new Group(data.list[0].value,
-                                                data.select[0].selected,
-                                                data.select[1].selected);
+                this.substituteSpecialitiesNamesWithId(data);
+                this.substituteFacultiesNamesWithId(data);
+                const newGroup: Group = new Group(data.list[0].value,
+                                                  data.select[0].selected,
+                                                  data.select[1].selected);
                 this.crudService.insertData(this.entity, newGroup)
                     .subscribe(response => {
                         this.modalInfoConfig.infoString = `${data.list[0].value} успішно створено`;
@@ -355,8 +351,8 @@ export class GroupComponent implements OnInit, OnDestroy {
         modalRefEdit.componentInstance.config = this.configEdit;
         modalRefEdit.result
             .then((data: any) => {
-                this.substituteSpecialitiesNamesOnId(data);
-                this.substituteFacultiesNamesOnId(data);
+                this.substituteSpecialitiesNamesWithId(data);
+                this.substituteFacultiesNamesWithId(data);
                 let newGroup: Group = new Group(data.list[0].value,
                                                 data.select[0].selected,
                                                 data.select[1].selected);
@@ -394,8 +390,7 @@ export class GroupComponent implements OnInit, OnDestroy {
             this.isSelectedBy = true;
             this.entityTitle = `Групи факультету: ${this.facultyName}`;
             this.getGroupsByFaculty(this.facultyId);
-        }
-        else {
+        } else {
             if (action === "delete" && this.entityData.length === 1 && this.entityDataLength > 1) {
                 this.offset = (this.page - 2) * this.limit;
                 this.page -= 1;

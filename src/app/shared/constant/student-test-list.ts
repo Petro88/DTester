@@ -1,19 +1,18 @@
 // Constants for table.component
 
-export const  headersStudentTestList = [
-    // {name: "№", className: "col-xs-12 col-sm-1"},
-    {name: "Предмет", className: "col-xs-12 col-sm-4"},
-    {name: "Назва тесту", className: "col-xs-12 col-sm-4"},
-    {name: "Дата початку", className: "col-xs-12 col-sm-3"},
+export const headersStudentTestList = [
+    {name: "Предмет і назва тесту", className: "col-xs-12 col-sm-5"},
+    {name: "Початок доступу", className: "col-xs-12 col-sm-2"},
+    {name: "Кінець доступу", className: "col-xs-12 col-sm-2"},
+    {name: "Пит. (шт)", className: "col-xs-12 col-sm-1"},
+    {name: "Час (хв)", className: "col-xs-12 col-sm-1"},
     {name: "", className: "col-xs-12 col-sm-1"}
 ];
 
-export const  headersStudentTestResults = [
-    // {name: "№", className: "col-xs-12 col-sm-1"},
-    {name: "Предмет", className: "col-xs-12 col-sm-3"},
-    {name: "Назва тесту", className: "col-xs-12 col-sm-3"},
-    {name: "Дата тестування", className: "col-xs-12 col-sm-3"},
-	{name: "Результат", className: "col-xs-12 col-sm-2"}
+export const headersStudentTestResults = [
+    {name: "Назва тесту", className: "col-xs-12 col-sm-5"},
+    {name: "Дата тестування", className: "col-xs-12 col-sm-5"},
+    {name: "Результат", className: "col-xs-12 col-sm-2"}
 ];
 
 export const actionsStudentTestList = [
