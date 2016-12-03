@@ -47,7 +47,7 @@ import {NgbdAlertSelfclosing} from "./app/studentpart/alerts/alert.component";
 import {CommonService} from "./app/shared/services/common.service";
 import {StudentTestResultsComponent} from "./app/studentpart/test-results/test-results.component";
 
-import { ChartComponent } from "./app/shared/chart/component/chart.component"
+import { ChartComponent } from "./app/shared/chart/component/chart.component";
 
 import {NotFoundComponent} from "./app/not-found/not-found.component";
 import {TestPlayerGuard} from "./app/shared/services/test-player.guard";
@@ -97,7 +97,7 @@ import {LoaderComponent} from "./app/shared/components/loader/loader.component";
         NgbdAlertSelfclosing,
 
 		StudentTestResultsComponent,
-        ChartComponent
+        ChartComponent,
 
         NotFoundComponent,
         LoaderComponent
