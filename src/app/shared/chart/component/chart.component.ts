@@ -15,8 +15,6 @@ export class ChartComponent implements OnInit, OnChanges {
     // common variables
     pageTitle: string = "Розклад тестів по предмету: ";
     @Input() color: string;
-    @Input() width: number;
-    @Input() height: number;
     data:any = {};
 
     constructor(private el: ElementRef,
@@ -29,8 +27,6 @@ export class ChartComponent implements OnInit, OnChanges {
 
     ngOnChanges() {
         this.data.color = this.color;
-        this.data.width = this.width;
-        this.data.height = this.height;
     }
 
     redrawChart() {

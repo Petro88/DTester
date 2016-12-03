@@ -22,22 +22,18 @@
             'align-items': 'center'
             }">
         <chart-container
-                [color]="data.color1"
-                [width]="data.width"
-                [height]="data.height">
+                [color]="data.color1">
 
         </chart-container>
         <chart-container
-                [color]="data.color2"
-                [width]="data.width"
-                [height]="data.height">
+                [color]="data.color2">
 
         </chart-container>
         <div>
             <form action="">
-                <p><b>Сортування</b></p>
-                <p><input name="unit" type="radio" value="$unit">$unit</p>
-                <p><input name="percent" type="radio" value="%percent" checked>%percent</p>
+                <p><b>SORT BY:</b></p>
+                <p><input name="unit" type="radio" value="dollar">dollar</p>
+                <p><input name="percent" type="radio" value="percentage" checked>percentage</p>
                 <p><input type="submit" value="Застосувати"></p>
             </form>
         </div>

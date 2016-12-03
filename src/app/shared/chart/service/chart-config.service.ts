@@ -11,9 +11,6 @@ export class ChartConfigService {
     dataUnit = [2.345, 2.050, 1.45, 25.1, 25.1];
     dataPercent = [70, 61, 49, 15, 14];
     categories = ['Seasonal Gardening', 'Fixing', 'Winter', 'Good', 'FD'];
-    // width = 400;
-    // height = 285;
-    // colorSeries ='#ED1B2D';
 
     public getBarChartConfig(container, data) {
         var chart;
@@ -28,8 +25,8 @@ export class ChartConfigService {
                     }
                 },
                 type: 'bar',
-                width: data.width,
-                height: data.height,
+                width: 320,
+                height: 220,
                 spacingTop: 30,
                 spacingBottom: 30,
                 marginRight: 30,
@@ -76,7 +73,7 @@ export class ChartConfigService {
                     borderWidth: 0,
                     grouping: false,
                     stacking: 'normal',
-                    pointWidth: 33,
+                    pointWidth: 25,
                     dataLabels: {
                         style: {
                             "fontSize": "12px",

@@ -12,10 +12,7 @@ export class TimeTableComponent implements AfterViewInit {
     pageTitle: string = "Розклад тестів по предмету: ";
     data = {
         color1: '#ED1B2D',
-        color2: 'green',
-        width: 380,
-        height: 270,
-        dataPercent: [70, 61, 49, 8, 5]
+        color2: 'green'
     };
 
     constructor(private location: Location) {
@@ -25,18 +22,6 @@ export class TimeTableComponent implements AfterViewInit {
     private chartComponent: ChartComponent;
 
     ngAfterViewInit() {
-    }
-
-    setLargeSize() {
-        this.data.width = 400;
-        this.data.height = 285;
-        this.chartComponent.redrawChart();
-    }
-
-    setSmallSize() {
-        this.data.width = 250;
-        this.data.height = 185;
-        this.chartComponent.redrawChart();
     }
 
     goBack(): void {
